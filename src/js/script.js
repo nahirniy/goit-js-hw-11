@@ -27,13 +27,12 @@ let observer = new IntersectionObserver(onLoad, options);
 
 function onLoad(entries, observer) {
   entries.forEach(entry => {
-    console.log(entry.isIntersecting);
     if (entry.isIntersecting) {
       getRequest(searchItem, (page += 1)).then(
         ({ data: { hits: arrayCards, totalHits: totalCards } }) => {
           if (page > Math.ceil(totalCards / 40)) {
             observer.unobserve(targetBox);
-            Notiflix.Notify.info("Unfortunately that's all");
+            Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
           }
 
           const markup = createMarkup(arrayCards);
