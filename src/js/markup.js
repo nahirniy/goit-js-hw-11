@@ -1,8 +1,7 @@
 export function createMarkup(arrayItem) {
-  return (markup = arrayItem
-    .map(
-      ({ tags, webformatURL, largeImageURL, views, downloads, likes, comments }) =>
-        `<div class="photo-card">
+  const marking = arrayItem.map(
+    ({ tags, webformatURL, largeImageURL, views, downloads, likes, comments }) =>
+      `<div class="photo-card">
             <a class="gallery-link" href="${largeImageURL}">
                 <img src="${webformatURL}" alt="${tags}" loading="lazy"/>
                 <div class="info">
@@ -25,6 +24,7 @@ export function createMarkup(arrayItem) {
                 </div>
             </a>
         </div>`
-    )
-    .join(''));
+  );
+
+  return marking.join('');
 }
