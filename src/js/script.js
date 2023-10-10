@@ -73,9 +73,12 @@ function onSubmit(e) {
       observer.observe(targetBox);
     })
 
-    .catch(() =>
-      Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
-    );
+    .catch(err => {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      console.log(err);
+    });
 }
 searchForm.addEventListener('submit', onSubmit);
 
