@@ -11,6 +11,7 @@ const targetBox = document.querySelector('.observe-box');
 
 let searchItem = '';
 let page = 1;
+let totalResult = 0;
 
 let lightbox = new SimpleLightbox('.gallery-link', {
   captionDelay: 250,
@@ -27,20 +28,16 @@ let observer = new IntersectionObserver(onLoad, options);
 
 function onLoad(entries, observer) {
   entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      getRequest(searchItem, (page += 1)).then(
-        ({ data: { hits: arrayCards, totalHits: totalCards } }) => {
-          if (page > Math.ceil(totalCards / 40)) {
-            observer.unobserve(targetBox);
-            Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
-          }
+    if (entry.isIntersecting && page < Math.ceil(totalResult / 40)) {
+      getRequest(searchItem, (page += 1)).then(({ data: { hits: arrayCards } }) => {
+        const markup = createMarkup(arrayCards);
+        galleryBox.insertAdjacentHTML('beforeend', markup);
 
-          const markup = createMarkup(arrayCards);
-          galleryBox.insertAdjacentHTML('beforeend', markup);
-
-          lightbox.refresh();
-        }
-      );
+        lightbox.refresh();
+      });
+    } else if (entry.isIntersecting && page >= Math.ceil(totalResult / 40)) {
+      observer.unobserve(targetBox);
+      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
     }
   });
 }
@@ -74,6 +71,8 @@ function onSubmit(e) {
       lightbox.refresh();
 
       observer.observe(targetBox);
+
+      totalResult = totalCards;
     })
 
     .catch(() =>
